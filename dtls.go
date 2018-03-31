@@ -9,7 +9,24 @@ package canopus
 #include <openssl/err.h>
 #include <openssl/ssl.h>
 #include <openssl/bio.h>
-#include <internal/bio.h>
+
+struct bio_method_st {
+    int type;
+    const char *name;
+    int (*bwrite) (BIO *, const char *, size_t, size_t *);
+    int (*bwrite_old) (BIO *, const char *, int);
+    int (*bread) (BIO *, char *, size_t, size_t *);
+    int (*bread_old) (BIO *, char *, int);
+    int (*bputs) (BIO *, const char *);
+    int (*bgets) (BIO *, char *, int);
+    long (*ctrl) (BIO *, int, long, void *);
+    int (*create) (BIO *);
+    int (*destroy) (BIO *);
+    long (*callback_ctrl) (BIO *, int, bio_info_cb *);
+};
+
+void bio_free_ex_data(BIO *bio);
+void bio_cleanup(void);
 
 extern int go_session_bio_write(BIO* bio, char* buf, int num);
 extern int go_session_bio_read(BIO* bio, char* buf, int num);
